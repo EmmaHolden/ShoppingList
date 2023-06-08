@@ -1,95 +1,80 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+'use client'
 
-export default function Home() {
+import { useState } from 'react'
+import './App.css'
+import Form from '@/components/Form'
+import ShoppingList from '@/components/ShoppingList'
+import TotalChecker from '@/components/TotalChecker'
+import SearchBar from '@/components/SearchBar'
+
+const App = () => {
+  const [nameInput, setNameInput] = useState('')
+  const [priceInput, setPriceInput] = useState('')
+  const [items, setItems] = useState([])
+  const [totalItems, setTotalItems] = useState(0)
+  const [totalCost, setTotalCost] = useState(0)
+  const [query, setQuery] = useState('')
+
+  const handleSubmit = (e) => { 
+    e.preventDefault()
+    let newItems = [...items]
+    let submittedItem = { name: nameInput, basePrice: priceInput, displayPrice: priceInput, counter: 1, visible: true}
+    newItems.push(submittedItem) 
+    setItems(newItems) 
+    setNameInput('') 
+    setPriceInput('')
+  }
+
+  const clearSearch = (items, setQuery) => {
+    let newItems = [...items]
+    {newItems.map((item) => {
+          item.visible = true;
+  })}
+    setItems(newItems)
+    setQuery('')
+  }
+
+  const deleteItem = (index) => {
+    let newItems = [...items]
+    newItems.splice(index, 1)
+    setItems(newItems)
+  }
+
+  const increaseCounter = (item) => {
+    let newItems = [...items]
+    item.counter += 1;
+    item.displayPrice = item.basePrice * item.counter;
+    setItems(newItems)
+  }
+
+  const decreaseCounter = (item) => {
+    if (item.counter > 1) {
+    let newItems = [...items]
+    item.counter -= 1;
+    item.displayPrice = item.basePrice * item.counter;
+    setItems(newItems)
+  }}
+  
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
+    <div>
+      <div>
+        <SearchBar items = {items} query = {query} setQuery = {setQuery} clearSearch = {clearSearch}/>
       </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+      <div>
+        {items.map((item, index) => {
+          if (item.visible == true) {
+          return (
+            <ShoppingList key={index} item={item} itemIndex={index} deleteItem={deleteItem} increaseCounter = {increaseCounter} decreaseCounter = {decreaseCounter} />
+          )}})}
       </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+      <div>
+        <Form handleSubmit = {handleSubmit} nameInput = {nameInput} setNameInput = {setNameInput} priceInput = {priceInput} setPriceInput = {setPriceInput}/>
       </div>
-    </main>
+      <div>
+        <TotalChecker items = {items} totalItems = {totalItems} setTotalItems = {setTotalItems} totalCost = {totalCost} setTotalCost = {setTotalCost}/>
+      </div>
+    </div>
   )
 }
+export default App
