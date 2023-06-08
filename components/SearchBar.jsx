@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 const SearchBar = ({ items, query, setQuery, clearSearch}) => {
     {items.map((item, index) => {
-        if (item.name.includes(query)) {
+        if (item.name.toLowerCase().includes(query.toLowerCase())) {
             item.visible = true;
         } else {
             item.visible = false

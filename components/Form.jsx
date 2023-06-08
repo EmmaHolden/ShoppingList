@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 const Form = ({ nameInput, setNameInput, priceInput, setPriceInput, handleSubmit }) => {
   return (
-    <div className = "form">
+    <div>
       <form onSubmit={handleSubmit}>
         <label>
           Name:
